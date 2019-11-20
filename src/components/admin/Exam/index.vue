@@ -10,13 +10,21 @@
                 <el-table-column type="expand">
                     <template slot-scope="props">
                         <el-table :data="props.row.choice_question">
-                            <el-table-column label="题目" prop="title"></el-table-column>
+                            <el-table-column label="题目" prop="title" width="120"></el-table-column>
                             <el-table-column label="选项1" prop="option1"></el-table-column>
                             <el-table-column label="选项2" prop="option2"></el-table-column>
                             <el-table-column label="选项3" prop="option3"></el-table-column>
                             <el-table-column label="选项4" prop="option4"></el-table-column>
                             <el-table-column label="答案" prop="answer"></el-table-column>
                             <el-table-column label="是否为多选" prop="is_multiple"></el-table-column>
+                            <el-table-column label="操作" width="100" fixed="right">
+                                <template slot-scope="scope">
+                                    <el-button @click="confirmDelchall(scope.$index, props.row.choice_question)" type="text" size="small">删除
+                                    </el-button>
+                                    <el-button @click="editchall(scope.$index, props.row.choice_question)" type="text" size="small">编辑
+                                    </el-button>
+                                </template>
+                            </el-table-column>
                         </el-table>
                     </template>
                 </el-table-column>
@@ -31,7 +39,7 @@
                     <template slot-scope="scope">
                         <el-button size="mini" @click="EditExam(scope.$index, tableData)">编辑
                         </el-button>
-                        <el-button size="mini" type="danger" @click="DelExam(scope.$index, tableData)">
+                        <el-button size="mini" type="danger" @click="confirmDelExam(scope.$index, tableData)">
                             删除</el-button>
                         <el-button size="mini" type="primary" icon="el-icon-circle-plus"
                             @click="PreAddchall(scope.$index, tableData)">添加题目</el-button>
@@ -84,7 +92,53 @@
                 </el-form-item>
             </el-form>
         </el-card>
-        <el-dialog title="编辑章节" width="30%" :visible.sync="dialogUpdateExamFromVisible">
+        <el-dialog title="编辑题目" width="40%" :visible.sync="dialogUpdateChallFromVisible">
+            <el-form :model="updatechallenge">
+                    <el-row>
+                        <el-col :span="18">
+                            <el-form-item label="题目" label-width="60px">
+                                <el-input v-model="updatechallenge.title"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <div style="height:10px"></div>
+                    <el-row>
+                        <el-col :span="6">
+                            <el-form-item label="选项一" :label-width="minformLabelWidth">
+                                <el-input v-model="updatechallenge.option1"></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-form-item label="选项二" :label-width="minformLabelWidth">
+                                <el-input v-model="updatechallenge.option2"></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-form-item label="选项三" :label-width="minformLabelWidth">
+                                <el-input v-model="updatechallenge.option3"></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-form-item label="选项四" :label-width="minformLabelWidth">
+                                <el-input v-model="updatechallenge.option4"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <div style="height:10px"></div>
+                    <el-row>
+                        <el-col :span="6">
+                            <el-form-item label="答案" :label-width="minformLabelWidth">
+                                <el-input v-model="updatechallenge.answer"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogUpdateChallFromVisible = false">取 消</el-button>
+                <el-button type="primary" @click="UpdateExamChall()">确 定</el-button>
+            </div>
+        </el-dialog>
+        <el-dialog title="编辑测验" width="30%" :visible.sync="dialogUpdateExamFromVisible">
             <el-form :label-position="labelPosition" :model="UpdateExamFrom">
                 <el-form-item label="测验名" :label-width="formLabelWidth">
                     <el-input v-model="UpdateExamFrom.examName" autocomplete="off"></el-input>
@@ -125,9 +179,9 @@
                     :key="challenge.key">
                     <el-row>
                         <el-col :span="18">
-                    <el-form-item label="题目" label-width="60px">
-                        <el-input v-model="challenge.title"></el-input>
-                    </el-form-item>
+                            <el-form-item label="题目" label-width="60px">
+                                <el-input v-model="challenge.title"></el-input>
+                            </el-form-item>
                         </el-col>
                     </el-row>
                     <div style="height:10px"></div>
@@ -209,16 +263,25 @@
                         answer: ''
                     }]
                 },
+                updatechallenge: {
+                    title: '',
+                    option1: '',
+                    option2: '',
+                    option3: '',
+                    option4: '',
+                    answer: ''
+                },
                 tableData: [],
                 loading: false,
                 loading2: false,
                 chapter: [],
                 course: [],
                 formLabelWidth: '80px',
-                minformLabelWidth: '60px',             
+                minformLabelWidth: '60px',
                 labelPosition: 'right',
                 dialogUpdateExamFromVisible: false,
                 dialogAddchoiceQuestionFromVisible: false,
+                dialogUpdateChallFromVisible: false,
                 options: [{
                     value: 'zhinan',
                     label: '指南',
@@ -247,11 +310,34 @@
                     this.$handleError(error);
                 }
             },
-            async DelExam(scope, rows) {
+            async DelExam(index, rows) {
                 try {
-                    let result = await Exam.DelExam(this.tableData[scope].exam_id)
+                    let result = await Exam.DelExam(this.tableData[index].exam_id)
                     this.$message.success("删除成功")
-                    rows.splice(scope, 1)
+                    rows.splice(index, 1)
+                } catch (error) {
+                    this.$handleError(error)
+                }
+            },
+            confirmDelExam(index,rows){
+                this.$confirm(`确认删除 ${rows[index].exam_name} ?`)
+                    .then(_ => {
+                        this.DelExam(index, rows)
+                    })
+                    .catch(_ => {});
+            },
+            confirmDelchall(index,rows){
+                this.$confirm(`确认删除 ${rows[index].title} ?`)
+                    .then(_ => {
+                        this.DelExamchall(rows[index].id)
+                    })
+                    .catch(_ => {});
+            },
+            async DelExamchall(id){
+                try {
+                    let result = await SelectChallenge.delChoiceQuestionToExam(id)
+                    this.$message.success("删除成功")
+                    this.ExamList();
                 } catch (error) {
                     this.$handleError(error)
                 }
@@ -327,9 +413,10 @@
                     this.AddchoiceQuestionFrom.challenge.splice(index, 1)
                 }
             },
-            async addChoicequestion(){
+            async addChoicequestion() {
                 try {
-                    let result = await SelectChallenge.addChoiceQuestionToExam(this.AddchoiceQuestionFrom.exam_id,this.AddchoiceQuestionFrom.challenge)
+                    let result = await SelectChallenge.addChoiceQuestionToExam(this.AddchoiceQuestionFrom.exam_id,
+                        this.AddchoiceQuestionFrom.challenge)
                     this.dialogAddchoiceQuestionFromVisible = false
                     this.$message.success(result.data.msg)
                 } catch (error) {
@@ -343,6 +430,27 @@
             PreAddchall(scope, rows) {
                 this.dialogAddchoiceQuestionFromVisible = true;
                 this.AddchoiceQuestionFrom.exam_id = rows[scope].exam_id;
+            },
+            editchall(index,rows){
+                //alert(JSON.stringify(rows[index]))
+                this.dialogUpdateChallFromVisible = true;
+                this.updatechallenge.id = rows[index].id;
+                this.updatechallenge.title = rows[index].title;
+                this.updatechallenge.option1 = rows[index].option1;
+                this.updatechallenge.option2 = rows[index].option2;
+                this.updatechallenge.option3 = rows[index].option3;
+                this.updatechallenge.option4 = rows[index].option4;
+                this.updatechallenge.answer = rows[index].answer;
+            },
+            async UpdateExamChall(){
+                try {
+                    let result = await SelectChallenge.updateChoiceQuestion(this.updatechallenge.id,this.updatechallenge.title,this.updatechallenge.option1,this.updatechallenge.option2,this.updatechallenge.option3,this.updatechallenge.option4,this.updatechallenge.answer)
+                    this.ExamList();
+                    this.$message.success("更新成功")
+                    this.dialogUpdateChallFromVisible = false
+                } catch (error) {
+                    this.$handleError(error)
+                }
             }
         },
         mounted() {

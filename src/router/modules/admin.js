@@ -39,9 +39,14 @@ export default {
         component: resolve => require(['@/components/admin/Course/CourseList.vue'], resolve),
     },
     {
-        path: 'AddCourse', //课程列表
+        path: 'AddCourse', //添加课程
         name: 'Add-Course',
         component: resolve => require(['@/components/admin/Course/addcourse.vue'], resolve),
+    },
+    {
+        path: 'AddCourseCategory', //添加课程
+        name: 'Add-CourseCategory',
+        component: resolve => require(['@/components/admin/Course/addCourseCategory.vue'], resolve),
     },
     {
         path: 'Exam',

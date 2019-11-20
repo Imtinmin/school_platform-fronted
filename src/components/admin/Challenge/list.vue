@@ -82,6 +82,7 @@
                     flag: '',
                     description: '',
                     url: '',
+                    index: ''
                 },
                 formLabelWidth: '80px',
                 labelPosition: 'right',
@@ -125,12 +126,12 @@
                     .catch(_ => {});
             },
             edit(index, rows) {
+                this.ChallengeFormVisible = true
                 this.challengeform.title = rows[index].title
                 this.challengeform.url = rows[index].url
                 this.challengeform.flag = rows[index].flag
                 this.challengeform.description = rows[index].description
                 this.challengeform.score = rows[index].score
-                this.ChallengeFormVisible = true
                 this.challenge_id = rows[index].qid
                 this.challengeform.index = index
             },

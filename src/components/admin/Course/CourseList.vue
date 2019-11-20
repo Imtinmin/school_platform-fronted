@@ -74,6 +74,10 @@
                             </el-table-column>
                             <el-table-column prop="Introduction" label="介绍">
                             </el-table-column>
+                            <el-table-column prop="created_at" label="创建时间">
+                            </el-table-column>
+                            <el-table-column prop="updated_at" label="修改时间">
+                            </el-table-column>
                             <el-table-column label="操作">
                                 <template slot-scope="scope">
                                     <el-button size="mini" @click="EditCourse(scope.$index, result[i].course)">编辑
@@ -211,7 +215,6 @@
                     this.loading = false
                 } catch (error) {
                     this.$handleError(error);
-                    //this.loading = false
                 }
             },
             reload() {
@@ -281,6 +284,7 @@
                     let result = await Chapter.UpdateChapter(this.ChapterForm.chapter_id, this.ChapterForm
                         .chapter_name, this.ChapterForm.order_num)
                     this.$message.success("修改成功");
+                    this.LoadCourseList();
                     this.dialogChapterFormVisible = false;
                 } catch (error) {
                     this.$handleError(error)
@@ -293,6 +297,7 @@
                 let chapter_id = rows.chapter_id;
                 try {
                     let result = await Chapter.DelChapter(chapter_id)
+                    this.LoadCourseList();  //更新表里数据
                     this.$message.success("删除成功");
                 } catch (error) {
                     this.$handleError(error)
@@ -302,7 +307,6 @@
                 //alert(row.content)
                 this.dialogVideoFormVisible = true;
                 this.VideoForm.video_id = row.video_id;
-                //alert(this.VideoForm.video_id)
                 this.VideoForm.title = row.title;
                 this.VideoForm.content = row.content;
                 this.VideoForm.order_num = row.order_num;
@@ -311,11 +315,9 @@
             },
             async UpdateVideo(id) {
                 try {
-                    //alert(id)
-                    //console.log(this.VideoForm.video_id+this.VideoForm.title+","+this.VideoForm.content+","+this.VideoForm.url+","+this.VideoForm.order_num)
                     let result = await Video.EditVideo(id, this.VideoForm.title, this.VideoForm.content, this
                         .VideoForm.url, this.VideoForm.order_num, this.VideoForm.ppt_url)
-                    //let result = await Video.EditVideo(id,this.VideoForm.title,this.VideoForm.content,this.VideoForm.url,this.VideoForm.order_num);
+                    this.LoadCourseList(); 
                     this.$message.success("编辑成功");
                     this.dialogVideoFormVisible = false;
 
@@ -330,6 +332,7 @@
                 let video_id = rows.video_id;
                 try {
                     let result = await Video.DeleteVideo(video_id);
+                    this.LoadCourseList(); 
                     this.$message.success("删除成功");
                 } catch (error) {
                     this.$handleError(error)

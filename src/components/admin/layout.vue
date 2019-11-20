@@ -25,7 +25,6 @@
                             </el-menu-item-group>
                             <el-menu-item-group title="题目类型">
                                 <el-menu-item index="/admin/AddCategory">添加题目类型</el-menu-item>
-                                <el-menu-item index="1-4">题目类型列表</el-menu-item>
                             </el-menu-item-group>
                         </el-submenu>
                         <el-menu-item index="/admin/Bulltin">

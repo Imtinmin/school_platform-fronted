@@ -1,7 +1,7 @@
 {
-  "name": "gdpcfronted",
+  "name": "schoolplatform-fronted",
   "description": "A Vue.js project",
-  "author": "yi.shyang@ele.me",
+  "author": "954093370@qq.com",
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --hot --env.dev --open",

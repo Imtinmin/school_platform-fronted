@@ -76,6 +76,12 @@ import Challenge from '@/api/Challenge'
             async onSubmit(){
                 try {
                     let result = await Challenge.CreateChallenge(this.ChallengeForm.title,this.ChallengeForm.description,this.ChallengeForm.url,this.ChallengeForm.category_id,this.ChallengeForm.flag,this.ChallengeForm.score);
+                    this.ChallengeForm.title = null;
+                    this.ChallengeForm.url = null;
+                    this.ChallengeForm.description = null;
+                    this.ChallengeForm.score = null;
+                    this.ChallengeForm.flag = null;
+                    this.ChallengeForm.category_id = null;
                     this.$message.success('创建题目成功');
                 } catch (error) {
                     this.$handleError(error)

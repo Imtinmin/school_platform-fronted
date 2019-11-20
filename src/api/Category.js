@@ -29,8 +29,32 @@ class Category extends Base {
         })
     }
 
-    delCategory(){
+    delCategory(category_id){
+        return new Promise(async (resolve,reject) => {
+            try  {
+                let result = await this.request("GET","/category/DelCategory",{"category_id":category_id},
+                {'needAuth':true});
+                resolve(result)
+            }
+            catch(e){
+                //alert(JSON.stringify(e))
+                reject(e)
+            }
+        })
+    }
 
+    CategoryList(){
+        return new Promise(async (resolve,reject) => {
+            try  {
+                let result = await this.request("GET","/category/CategoryList",null,
+                {'needAuth':true});
+                resolve(result)
+            }
+            catch(e){
+                //alert(JSON.stringify(e))
+                reject(e)
+            }
+        })
     }
 }
 
