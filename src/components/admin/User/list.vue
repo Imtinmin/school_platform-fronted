@@ -5,11 +5,6 @@
       </el-table-column>
       <el-table-column prop="name" label="name" width="80">
       </el-table-column>
-      <!--<el-table-column
-      prop="token"
-      label="token"
-      >
-    </el-table-column>-->
       <el-table-column prop="signUpTime" label="注册时间">
       </el-table-column>
       <el-table-column prop="lastLoginTime" label="上次登录时间">
@@ -18,11 +13,12 @@
       </el-table-column>
       <el-table-column prop="banned" label="banned" width="80">
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column label="操作" width="350">
         <template slot-scope="scope">
           <el-button size="small" @click="UpdateAdmin(scope.$index, scope.row)">赐予管理员</el-button>
           <el-button size="small" @click="degrade(scope.$index, scope.row)">贬了</el-button>
-          <el-button size="medium" type="danger" @click="confirm(scope.$index, tableData)">删除</el-button>
+          <el-button size="small" type="danger" @click="confirm(scope.$index, tableData)">删除</el-button>
+          <el-button size="small" type="info" @click="ban(scope.$index, tableData)">禁用</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -73,6 +69,16 @@
           this.$message.success(result.data.msg)
           this.tableData[index].admin = 0;
         } catch (error) {
+          this.$handleError(error);
+        }
+      },
+      async ban(index,rows) {
+        let user_id = this.tableData[index].user_id;
+        try {
+          let result = await User.ban(user_id);
+          this.$message.success(result.data.msg)
+          this.tableData[index].banned = 1;
+            } catch (error) {
           this.$handleError(error);
         }
       },

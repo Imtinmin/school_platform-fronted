@@ -63,8 +63,9 @@
                     <!---->
                     <el-dialog title="解题排行" :visible.sync="dialogTableVisible" center width="30%">
                         <el-table :data="SolvedTable">
-                            <el-table-column property="rank" label="排名" width="150"></el-table-column>
-                            <el-table-column property="name" label="昵称" width="200"></el-table-column>
+                            <el-table-column property="rank" label="排名" width="100"></el-table-column>
+                            <el-table-column property="name" label="昵称" width="150">
+                            </el-table-column>
                             <el-table-column property="solvedAt" label="提交时间"></el-table-column>
                         </el-table>
                     </el-dialog>
@@ -146,6 +147,9 @@
             },
             one(a) {
                 alert(a)
+            },
+            select(user_id) {
+                this.$router.push({path:'/user/ctf/' + user_id});
             },
             async submitform(id, i, j) {
                 try {

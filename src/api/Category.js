@@ -43,6 +43,18 @@ class Category extends Base {
         })
     }
 
+    UpdateCategory(id,name){
+        return new Promise(async (resolve,reject) => {
+            try  {
+                let result = await this.request("POST","/category/CategoryEdit",{"category_id":id,"category_name": name},{'needAuth':true});
+                resolve(result)
+            }
+            catch(e){
+                reject(e)
+            }
+        })
+    }
+
     CategoryList(){
         return new Promise(async (resolve,reject) => {
             try  {

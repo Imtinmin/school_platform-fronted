@@ -44,7 +44,7 @@
             >
         <span>是否开始答题？限时30分钟</span>
         <span slot="footer" class="dialog-footer">
-    <el-button @click="toIndex()">取 消</el-button>
+    <el-button @click="goback()">取 消</el-button>
     <el-button type="primary" @click="LoadView($route.query.exam);dialogVisible=false">确 定</el-button>
   </span>
     </el-dialog>
@@ -105,6 +105,7 @@
         this.sec = this.PrefixInteger(sec, 2)
         if(this.min <= 0 && this.sec <= 0){
           this.dialogVisible = true
+          this.submitform(this.$route.query.exam)
           return false
         }
         setTimeout(() => {
@@ -154,6 +155,9 @@
       },
       preabandon(){
         this.dialogVisible2 = true
+      },
+      goback() {
+        this.$router.go(-1)
       },
       async abandon(){
         try {

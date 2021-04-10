@@ -7,7 +7,7 @@
             </div>
             <el-alert title="课程删除可能会延迟一下，更新数据刷新一下页面" type="warning" effect="dark">
             </el-alert>
-            <el-tabs v-model="activeTab" @tab-click="handleClick">
+            <el-tabs v-if="result.length > 0" v-model="activeTab" @tab-click="handleClick">
                 <template v-for="(category,i) in result">
                     <el-tab-pane :label="category.category_name" :name="category.category_name" :key="i">
                         <el-table stripe :data="category.course" style="width: 100%;margin-bottom: 20px;"
@@ -91,6 +91,9 @@
                     </el-tab-pane>
                 </template>
             </el-tabs>
+            <el-tabs v-else>
+                <center>当前无课程</center>
+            </el-tabs>
         </el-card>
         <el-dialog title="编辑课程" width="40%" :visible.sync="dialogCourseFormVisible">
             <el-form :label-position="labelPosition" :model="CourseForm">
@@ -104,7 +107,7 @@
                     <el-select v-model="CourseForm.category_id" placeholder="请选择">
                         <el-option v-for="item in result" :key="item.category_id" :label="item.category_name"
                             :value="item.course_category_id">
-                            <span style="float: left">{{ item.course_category_id }}</span>
+                            <span style="float: left">{{ item.category_name }}</span>
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -208,11 +211,15 @@
                 this.loading = true
                 try {
                     let result = await Course.AdminCourseList();
-                    this.result = result.data.data;
-                    this.chapter = result.data.data[0].course[0].chapter
-                    //alert(JSON.stringify(this.result))
-                    this.activeTab = this.result[0].category_name;
-                    this.loading = false
+                    if(result.data.data.length > 0){
+                        this.result = result.data.data;
+                        this.chapter = result.data.data[0].course[0].chapter
+                        //alert(JSON.stringify(this.result))
+                        this.activeTab = this.result[0].category_name;
+                        this.loading = false
+                    }else{
+                        this.loading = false
+                    }
                 } catch (error) {
                     this.$handleError(error);
                 }

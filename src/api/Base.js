@@ -5,8 +5,8 @@ class Base
 {
     constructor(){
         this.instance = axios.create({
-            //baseURL: 'http://127.0.0.1:8080/API',
-            baseURL: 'http://localhost:8000/API',
+            baseURL: 'http://39.108.36.103:8000/API',
+            //baseURL: 'http://localhost:8000/API',
             timeout: 10000,
         });
     }
@@ -16,7 +16,7 @@ class Base
             let options = {
                 method: method,
                 url: path,
-                withCredentials: true       //带laravel-session
+                withCredentials: false       //带laravel-session
             }
             if(localStorage.getItem('jwt')){
                 options['headers'] = {
@@ -44,8 +44,13 @@ class Base
                 options.data = params
             }
             
+
+
             try {
                 let result = await this.instance.request(options);
+
+
+
                 if(result.data){
                     if(result.data.code === 200){
                         resolve(result)

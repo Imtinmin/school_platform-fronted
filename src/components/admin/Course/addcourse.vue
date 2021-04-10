@@ -12,6 +12,7 @@
                                 <el-select :loading="loading" v-model="CourseFrom.category_id" placeholder="请选择">
                                     <el-option v-for="item in result" :key="item.course_category_id"
                                         :label="item.category_name" :value="item.course_category_id">
+                                        
                                     </el-option>
                                 </el-select>
                             </el-form-item>
@@ -23,7 +24,7 @@
                                 <el-input type="textarea" v-model="CourseFrom.Introduction"></el-input>
                             </el-form-item>
                             <el-form-item>
-                                <el-button type="primary" @click="submitForm()">确认添加</el-button>
+                                <el-button type="primary" @click="submitCourseForm()">确认添加</el-button>
                             </el-form-item>
                         </el-form>
                     </el-card>

@@ -6,7 +6,7 @@
                     <div slot="header" class="clearfix">
                         <span>课程学习</span>
                     </div>
-                    <el-tabs type="border-card">
+                    <el-tabs v-if="result.length > 0" type="border-card">
                         <template v-for="(category,j) in result">
                             <el-tab-pane :key="j">
                                 <template slot="label">
@@ -28,6 +28,9 @@
                                 </el-col>
                             </el-tab-pane>
                         </template>
+                    </el-tabs>
+                    <el-tabs v-else>
+                        <center>当前无课程</center>
                     </el-tabs>
                 </el-card>
             </el-main>

@@ -20,10 +20,25 @@ class User extends Base {
     /*
     *注册
     */
-    register(email,name,password){
+    register(email,name,password,captcha,key){
         return new Promise(async (resolve,reject) => {
             try {
-                let result = await this.request("POST","/user/register",{"email":email,"name":name,"password":password});
+                let result = await this.request("POST","/user/register",{"email":email,"name":name,"password":password,"captcha":captcha,"key":key});
+                resolve(result)
+            } 
+            catch (error) {
+                reject(error)
+            }
+        })
+    }
+
+    /*
+    *验证码
+    */
+    captcha(){
+        return new Promise(async (resolve,reject) => {
+            try {
+                let result = await this.request("GET","/user/captcha");
                 resolve(result)
             } 
             catch (error) {
@@ -129,6 +144,20 @@ class User extends Base {
         return new Promise(async (resolve,reject) => {
             try {
                 let result = await this.request("POST","/user/degrade",{"user_id":user_id},{
+                    'needAuth':true
+                });
+                resolve(result)
+            } 
+            catch (error) {
+                reject(error)
+            }
+        }) 
+    }
+
+    ban(user_id){
+        return new Promise(async (resolve,reject) => {
+            try {
+                let result = await this.request("POST","/user/BanUser",{"user_id":user_id},{
                     'needAuth':true
                 });
                 resolve(result)
